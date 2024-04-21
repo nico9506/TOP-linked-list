@@ -12,6 +12,10 @@ const Node = class {
         this.#nextNode = nextNode;
     }
 
+    toString() {
+        return `${this.#value}`;
+    }
+
     get value() {
         return this.#value;
     }
@@ -35,24 +39,57 @@ const SLinkedList = class {
      * Node of the linked list.
      */
 
-    // #sLinkedList;
+    #firstNode = null;
 
     constructor() {
-        this.sLinkedList = [new Node()];
+        this.#firstNode = null;
+    }
+
+    #checkAllNodes(startNode) {
+        return !(startNode.nextNode instanceof Node)
+            ? startNode
+            : this.#checkAllNodes(startNode.nextNode);
     }
 
     toString() {
-        this.sLinkedList.forEach((node) => {
-            console.log(`--> (${node.value})`);
-        });
+        let tmpNode = this.#firstNode;
+        let printedList = "";
+
+        while (tmpNode instanceof Node) {
+            printedList += `-->(${tmpNode})`;
+            tmpNode = tmpNode.nextNode;
+        }
+
+        return printedList;
     }
 
-    addNode(newNode) {
-        if (newNode instanceof Node) {
-            this.sLinkedList.push(newNode);
-        } else {
-            console.error("Node object parameter required!");
-        }
+    // get size() {
+    //     return this.#sLinkedList.length;
+    // }
+
+    get head() {
+        return this.#firstNode;
+    }
+
+    set head(newFirstNode) {
+        newFirstNode.nextNode = this.#firstNode;
+        this.#firstNode = newFirstNode;
+    }
+
+    get tail() {
+        return this.#checkAllNodes(this.#firstNode);
+    }
+
+    append(newValue) {
+        /**
+         * Append a new Node to the end of the list
+         */
+
+        const newNode = new Node(newValue);
+
+        this.#firstNode === null
+            ? (this.#firstNode = newNode)
+            : (this.tail.nextNode = newNode);
     }
 };
 
@@ -61,12 +98,25 @@ const SLinkedList = class {
  */
 const node1 = new Node("node1");
 const nodeA = new Node("nodeA");
+const nodeAux = new Node("nodeAux");
 const nodeTest = new Node("nodeTest");
 
 const sLL = new SLinkedList();
 
-sLL.addNode(node1);
-sLL.addNode(nodeA);
-sLL.addNode(nodeTest);
+sLL.append(node1);
+sLL.append(nodeA);
+sLL.append(nodeAux);
 
-sLL.toString();
+// Whole list
+// console.log(`${sLL}`);
+
+// Get first node
+// console.log(`${sLL.head}`);
+
+// Set first node
+// sLL.head = nodeTest;
+// console.log(`${sLL.head}`);
+// console.log(`${sLL}`);
+
+// Get last node
+// console.log(`${sLL.tail}`);
