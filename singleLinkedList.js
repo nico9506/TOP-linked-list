@@ -93,7 +93,7 @@ const SLinkedList = class {
             tmpNode = tmpNode.nextNode;
         }
 
-        return console.error(`Index (${index}) out of range`);
+        return console.error(`Index (${index}) out of range --> at(index)`);
     }
 
     head() {
@@ -104,12 +104,12 @@ const SLinkedList = class {
         return this.#firstNode;
     }
 
-    prepend(newFirstNode) {
+    prepend(value) {
         /**
          * Append a new Node to the start of the list
          */
 
-        newFirstNode.nextNode = this.#firstNode;
+        const newFirstNode = new Node(value, this.#firstNode);
         this.#firstNode = newFirstNode;
     }
 
@@ -155,10 +155,61 @@ const SLinkedList = class {
         return false;
     }
 
-    find() {
+    find(value) {
         /**
          * returns the index of the node containing value, or null if not found.
          */
+        if (this.contains(value)) {
+            let tmpIndex = 0;
+            let tmpNode = this.#firstNode;
+            while (tmpNode instanceof Node) {
+                if (`${tmpNode.value}` === value) return tmpIndex;
+                tmpNode = tmpNode.nextNode;
+                tmpIndex++;
+            }
+        }
+
+        return null;
+    }
+
+    insertAt(value, index) {
+        /**
+         * inserts a new node with the provided value at the given index.
+         */
+
+        if (index < 0 || index > this.size() - 1) {
+            console.error(`Index ${index} out of range`);
+            return;
+        }
+
+        if (index === 0) {
+            this.prepend(value);
+            return;
+        } else {
+            let previousNode = this.at(index - 1);
+            const newNode = new Node(value, previousNode.nextNode);
+            previousNode.nextNode = newNode;
+        }
+    }
+
+    removeAt(index) {
+        /**
+         * removes the node at the given index
+         */
+        if (index < 0 || index > this.size() - 1) {
+            console.error(`Index ${index} out of range`);
+            return;
+        }
+
+        if (index === 0) {
+            this.#firstNode = this.#firstNode.nextNode;
+            return;
+        } else {
+            let previousNode = this.at(index - 1);
+            const nodeToDrop = this.at(index);
+            previousNode.nextNode = nodeToDrop.nextNode;
+            return;
+        }
     }
 };
 
@@ -168,7 +219,6 @@ const SLinkedList = class {
 const node1 = new Node("node1");
 const nodeA = new Node("nodeA");
 const nodeAux = new Node("nodeAux");
-const nodeTest = new Node("nodeTest");
 
 const sLL = new SLinkedList();
 
@@ -183,7 +233,7 @@ sLL.append(nodeAux);
 // console.log(`${sLL.head()}`);
 
 // Set first node
-// sLL.prepend(nodeTest);
+// sLL.prepend(123);
 // console.log(`${sLL.head()}`);
 // console.log(`${sLL}`);
 
@@ -206,3 +256,17 @@ sLL.append(nodeAux);
 //  returns true if the passed in value is in the list and otherwise returns false.
 // console.log(sLL.contains("nodeAux"));
 // console.log(sLL.contains("nodeTest"));
+
+// returns the index of the node containing value, or null if not found.
+// console.log(sLL.find("nodeAux"));
+// console.log(sLL.find("nodeTest"));
+
+// inserts a new node with the provided value at the given index.
+// console.log(`${sLL}`);
+// sLL.insertAt(123, 1);
+// console.log(`${sLL}`);
+
+// removes the node at the given index
+// console.log(`${sLL}`);
+// sLL.removeAt(1);
+// console.log(`${sLL}`);
